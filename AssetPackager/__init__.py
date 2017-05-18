@@ -1,1 +1,1 @@
-from AssetPackager import *
+from .AssetPackager import *

@@ -1,7 +1,7 @@
 import copy
 import os
 import re
-import urllib.request, urllib.error, urllib.parse
+import urllib2
 from subprocess import Popen, PIPE, STDOUT
 
 YUI_COMMAND = 'yuicompressor'.split(' ')
@@ -25,7 +25,7 @@ def _shift(queue):
 def _splitArray(array, index, needle):
   haystack = array[index]
   # find needle in haystack:
-  pos = [x for x in range(len(haystack)) if haystack[x:x+len(needle)] == needle][0]
+  pos = [x for x in xrange(len(haystack)) if haystack[x:x+len(needle)] == needle][0]
   before, after = haystack[:pos], haystack[pos + len(needle):]
   del array[index]
   if after:
@@ -36,10 +36,10 @@ def _splitArray(array, index, needle):
 # just longest common substring routine with a serialize/deserialize step at beginning/end
 def longest_common_subarray(a1, a2):
   a1, a2 = SEP + SEP.join(a1) + SEP, SEP + SEP.join(a2) + SEP
-  m = [[0] * (1 + len(a2)) for i in range(1 + len(a1))]
+  m = [[0] * (1 + len(a2)) for i in xrange(1 + len(a1))]
   longest, x_longest = 0, 0
-  for x in range(1, 1 + len(a1)):
-    for y in range(1, 1 + len(a2)):
+  for x in xrange(1, 1 + len(a1)):
+    for y in xrange(1, 1 + len(a2)):
       if a1[x - 1] == a2[y - 1]:
         m[x][y] = m[x - 1][y - 1] + 1
         if m[x][y] > longest:
@@ -97,4 +97,4 @@ def package(input_list, output, compress=True, filename_markers_in_comments=True
       file_type = 'css' if in_file.endswith('css') else 'js'
       cmd = YUI_COMMAND + ['--type=' + file_type] if compress else ['cat']
       p = Popen(cmd, stdout=out, stdin=PIPE, stderr=STDOUT)
-      p.communicate(input=urllib.request.urlopen(in_file).read())
+      p.communicate(input=urllib2.urlopen(in_file).read())
